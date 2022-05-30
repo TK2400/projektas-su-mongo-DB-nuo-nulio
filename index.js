@@ -26,11 +26,11 @@ app.listen(process.env.PORT, () => {
   console.log('Serveris paleistas. Laukia užklausų');
 });
 
-app.get('/elements', (req, response) => {
+app.get('/elements', (req, res) => {
   client.connect(async () => {
-    const collection = client.db(process.env.DBC).collection(process.env.EC);
+    const collection = client.db('nauji-elementai').collection('elementai');
     const result = await collection.find({}).toArray();
-    response.json(result);
+    res.json(result);
     client.close();
   });
 });
@@ -43,7 +43,7 @@ app.get('/elements', (req, response) => {
 
 app.post('/element', (req, res) => {
   client.connect(async () => {
-    const collection = client.db(process.env.DBC).collection(process.env.EC);
+    const collection = client.db('nauji-elementai').collection('elementai');
     const result = await collection.insertOne({
       vardas: req.body.vardas,
       pavarde: req.body.pavarde,
@@ -59,7 +59,7 @@ app.post('/element', (req, res) => {
 app.delete('/element', (req, res) => {
   console.log(ObjectId(req.body.id))
   client.connect(async () => {
-    const collection = client.db(process.env.DBC).collection(process.env.EC);
+    const collection = client.db('nauji-elementai').collection('elementai');
     const result = await collection.deleteOne({
       _id: ObjectId(req.body.id)
     })
@@ -75,8 +75,8 @@ app.patch("/element", (req, res) => {
       res.send("Something went wrong!!");
       client.close();
     } else {
-      const database = client.db(process.env.DBC);
-      const collection = database.collection(process.env.CE);
+      const database = client.db('nauji-elementai')
+      const collection = database.collection('elementai')
  
       const { _id, vardas } = req.body;
       // const _id = req.params.body._id;
@@ -85,14 +85,14 @@ app.patch("/element", (req, res) => {
       const filter = { _id: ObjectId(_id) };
       const newValues = { $set: { vardas: vardas } };
  // 86 eilutes syntax reikia atsiminti del mongodb PATCH metodo
-      try {
+      // try {
         const result = await collection.updateOne(filter, newValues);
         res.send(result);
         client.close();
-      } catch (err) {
-        res.send("Something went wrong!!");
-        client.close();
-      }
+      // } catch (err) {
+      //   res.send("Something went wrong!!");
+      //   client.close();
+      // }
     }
   });
 });
