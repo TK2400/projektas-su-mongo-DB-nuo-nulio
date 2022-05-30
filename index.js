@@ -77,22 +77,55 @@ app.patch("/element", (req, res) => {
     } else {
       const database = client.db('nauji-elementai')
       const collection = database.collection('elementai')
- 
+
       const { _id, vardas } = req.body;
       // const _id = req.params.body._id;
       // const name = req.params.body.name;
       //82 ir 83 eilutes atitinka 81 eilute
       const filter = { _id: ObjectId(_id) };
       const newValues = { $set: { vardas: vardas } };
- // 86 eilutes syntax reikia atsiminti del mongodb PATCH metodo
+      // 86 eilutes syntax reikia atsiminti del mongodb PATCH metodo
       // try {
-        const result = await collection.updateOne(filter, newValues);
-        res.send(result);
-        client.close();
+      const result = await collection.updateOne(filter, newValues);
+      res.send(result);
+      client.close();
       // } catch (err) {
       //   res.send("Something went wrong!!");
       //   client.close();
       // }
+    }
+  });
+});
+
+// put updatins visa objekta
+app.put("/element", (req, res) => {
+  client.connect(async function (err, client) {
+    if (err) {
+      res.send("Something went wrong!!");
+      client.close();
+    } else {
+      const database = client.db('nauji-elementai')
+      const collection = database.collection('elementai')
+
+      const { _id, vardas, pavarde, metai, el_pastas } = req.body;
+      // const _id = req.params.body._id;
+      // const name = req.params.body.name;
+      //82 ir 83 eilutes atitinka 81 eilute
+      const filter = { _id: ObjectId(_id) };
+      const newValues = {
+        vardas: vardas,
+        pavarde: pavarde,
+        metai: metai,
+        el_pastas: el_pastas
+      };
+      try {
+        const result = await collection.replaceOne(filter, newValues);
+        res.send(result);
+        client.close();
+      } catch (err) {
+        res.send("something went wrong")
+        client.close()
+      }
     }
   });
 });
