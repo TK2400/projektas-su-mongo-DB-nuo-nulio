@@ -84,7 +84,7 @@ app.patch("/element", (req, res) => {
       //82 ir 83 eilutes atitinka 81 eilute
       const filter = { _id: ObjectId(_id) };
       const newValues = { $set: { vardas: vardas } };
- 
+ // 86 eilutes syntax reikia atsiminti del mongodb PATCH metodo
       try {
         const result = await collection.updateOne(filter, newValues);
         res.send(result);
