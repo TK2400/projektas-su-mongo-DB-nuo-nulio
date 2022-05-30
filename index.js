@@ -81,6 +81,7 @@ app.patch("/element", (req, res) => {
       const { _id, vardas } = req.body;
       // const _id = req.params.body._id;
       // const name = req.params.body.name;
+      //82 ir 83 eilutes atitinka 81 eilute
       const filter = { _id: ObjectId(_id) };
       const newValues = { $set: { vardas: vardas } };
  
