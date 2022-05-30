@@ -28,7 +28,7 @@ app.listen(process.env.PORT, () => {
 
 app.get('/elements', (req, response) => {
   client.connect(async () => {
-    const collection = client.db("nauji-elementai").collection("elementai");
+    const collection = client.db(process.env.DBC).collection(process.env.EC);
     const result = await collection.find({}).toArray();
     response.json(result);
     client.close();
@@ -43,7 +43,7 @@ app.get('/elements', (req, response) => {
 
 app.post('/element', (req, res) => {
   client.connect(async () => {
-    const collection = client.db("nauji-elementai").collection("elementai");
+    const collection = client.db(process.env.DBC).collection(process.env.EC);
     const result = await collection.insertOne({
       vardas: req.body.vardas,
       pavarde: req.body.pavarde,
@@ -59,7 +59,7 @@ app.post('/element', (req, res) => {
 app.delete('/element', (req, res) => {
   console.log(ObjectId(req.body.id))
   client.connect(async () => {
-    const collection = client.db("nauji-elementai").collection("elementai");
+    const collection = client.db(process.env.DBC).collection(process.env.EC);
     const result = await collection.deleteOne({
       _id: ObjectId(req.body.id)
     })
@@ -75,8 +75,8 @@ app.patch("/element", (req, res) => {
       res.send("Something went wrong!!");
       client.close();
     } else {
-      const database = client.db("nauji-elementai");
-      const collection = database.collection("elementai");
+      const database = client.db(process.env.DBC);
+      const collection = database.collection(process.env.CE);
  
       const { _id, vardas } = req.body;
       // const _id = req.params.body._id;
