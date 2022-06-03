@@ -26,12 +26,19 @@ app.listen(process.env.PORT, () => {
   console.log('Serveris paleistas. Laukia užklausų');
 });
 
-app.get('/elements', (req, res) => {
+app.get('/users', (req, res) => {
   client.connect(async () => {
-    const collection = client.db('nauji-elementai').collection('elementai');
-    const result = await collection.find({}).toArray();
-    res.json(result);
-    client.close();
+    const collection = client.db('usersdb').collection('users');
+
+    try {
+      const result = await collection.find({}).toArray();
+      res.json(result);
+      client.close();
+    } catch (err) {
+      res.send("Something went wrong!!");
+      client.close();
+    }
+
   });
 });
 
@@ -41,25 +48,31 @@ app.get('/elements', (req, res) => {
 // DB_URI - tokiu budu neliktu nei user namo nei slaptazodio kode
 //  tada process.env.URI / env.DB_name ir t.t.
 
-app.post('/element', (req, res) => {
+app.post('/user', (req, res) => {
   client.connect(async () => {
-    const collection = client.db('nauji-elementai').collection('elementai');
-    const result = await collection.insertOne({
-      vardas: req.body.vardas,
-      pavarde: req.body.pavarde,
-      metai: req.body.metai,
-      el_pastas: req.body.el_pastas
-    });
-    res.json(result);
-    client.close();
+    const collection = client.db('usersdb').collection('users');
+    try {
+      const result = await collection.insertOne({
+        vardas: req.body.vardas,
+        pavarde: req.body.pavarde,
+        metai: req.body.metai,
+        el_pastas: req.body.el_pastas
+      });
+      res.json(result);
+      client.close();
+
+    } catch (err) {
+      res.send("Something went wrong!!");
+      client.close();
+    }
   });
 });
 
 
-app.delete('/element', (req, res) => {
+app.delete('/user', (req, res) => {
   console.log(ObjectId(req.body.id))
   client.connect(async () => {
-    const collection = client.db('nauji-elementai').collection('elementai');
+    const collection = client.db('usersdb').collection('users');
     const result = await collection.deleteOne({
       _id: ObjectId(req.body.id)
     })
@@ -69,43 +82,43 @@ app.delete('/element', (req, res) => {
 });
 
 
-app.patch("/element", (req, res) => {
+app.patch("/user", (req, res) => {
   client.connect(async function (err, client) {
     if (err) {
       res.send("Something went wrong!!");
       client.close();
     } else {
-      const database = client.db('nauji-elementai')
-      const collection = database.collection('elementai')
+      const database = client.db('usersdb')
+      const collection = database.collection('users')
 
       const { _id, vardas } = req.body;
       // const _id = req.params.body._id;
       // const name = req.params.body.name;
       //82 ir 83 eilutes atitinka 81 eilute
       const filter = { _id: ObjectId(_id) };
-      const newValues = { $set: { vardas: vardas } };
+      const newValues = { $set: { vardas: vardas } }; // gali buti tik vardas
       // 86 eilutes syntax reikia atsiminti del mongodb PATCH metodo
-      // try {
-      const result = await collection.updateOne(filter, newValues);
-      res.send(result);
-      client.close();
-      // } catch (err) {
-      //   res.send("Something went wrong!!");
-      //   client.close();
-      // }
+      try {
+        const result = await collection.updateOne(filter, newValues);
+        res.send(result);
+        client.close();
+      } catch (err) {
+        res.send("Something went wrong!!");
+        client.close();
+      }
     }
   });
 });
 
 // put updatins visa objekta
-app.put("/element", (req, res) => {
+app.put("/user", (req, res) => {
   client.connect(async function (err, client) {
     if (err) {
       res.send("Something went wrong!!");
       client.close();
     } else {
-      const database = client.db('nauji-elementai')
-      const collection = database.collection('elementai')
+      const database = client.db('usersdb')
+      const collection = database.collection('users')
 
       const { _id, vardas, pavarde, metai, el_pastas } = req.body;
       // const _id = req.params.body._id;
@@ -126,6 +139,22 @@ app.put("/element", (req, res) => {
         res.send("something went wrong")
         client.close()
       }
+
     }
   });
 });
+
+app.get("/count", (req, res) => {
+  client.connect(async function (err, client) {
+    if (err) {
+      res.send("something went wrong")
+      client.close()
+    } else {
+      const database = client.db('usersdb');
+      const collection = database.collection('users');
+      const result = await collection.countDocuments({ age: { $gt: 50 } })
+      res.send(`result: ${result}`)
+    }
+  });
+});
+
