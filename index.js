@@ -144,15 +144,17 @@ app.put("/user", (req, res) => {
   });
 });
 
-app.get("/count", (req, res) => {
+app.get("/count/:number", (req, res) => {
   client.connect(async function (err, client) {
     if (err) {
       res.send("something went wrong")
       client.close()
     } else {
+      const number = Number(req.params.number)
+      console.log(number)
       const database = client.db('usersdb');
       const collection = database.collection('users');
-      const result = await collection.countDocuments({ age: { $gt: 50 } })
+      const result = await collection.countDocuments({ age: { $gt: number } })
       res.send(`result: ${result}`)
     }
   });
