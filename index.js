@@ -160,3 +160,21 @@ app.get("/count/:from/:to", (req, res) => {
   });
 });
 
+app.get("/count/", (req, res) => {
+  client.connect(async function (err, client) {
+    if (err) {
+      res.send("something went wrong")
+      client.close()
+    } else {
+      const from = Number(req.params.from)
+      const to = Number(req.params.to)
+      const database = client.db('usersdb');
+      const collection = database.collection('users');
+      const result = await collection
+      .aggregate([{$group: {_id: null, averageAge: {$avg: "$age" } } }])
+      .toArray()
+      res.send(`result: ${JSON.stringify(result)}`)
+    }
+  });
+});
+
