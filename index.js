@@ -11,6 +11,7 @@ const { ObjectID } = require('bson');
 
 const app = express();
 app.use(express.json());
+app.use(express.static("public")) // sita eilute leidzia node'ui express pagalba grazinti failus
 app.use(cors({
   origin: '*'
 }));
