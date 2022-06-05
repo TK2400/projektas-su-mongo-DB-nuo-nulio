@@ -171,7 +171,9 @@ app.get("/count/", (req, res) => {
       const database = client.db('usersdb');
       const collection = database.collection('users');
       const result = await collection
-      .aggregate([{$group: {_id: null, averageAge: {$avg: "$age" } } }])
+      .aggregate([
+        {$match: { name: "Steve"}},
+        {$group: {_id: "$name", amziausSuma: {$sum: "$age" } } }])
       .toArray()
       res.send(`result: ${JSON.stringify(result)}`)
     }
