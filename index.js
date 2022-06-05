@@ -16,19 +16,25 @@ app.use(cors({
 }));
 
 
-const client = new MongoClient(process.env.URI, {
+// is Egidijaus kodo pavyzdyus del env duomenu
+const {
+  PORT, DBC, URI, CE
+} =process.env
+
+
+const client = new MongoClient(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
 
-app.listen(process.env.PORT, () => {
+app.listen(PORT, () => {
   console.log('Serveris paleistas. Laukia užklausų');
 });
 
 app.get('/users', (req, res) => {
   client.connect(async () => {
-    const collection = client.db('usersdb').collection('users');
+    const collection = client.db(DBC).collection(CE);
 
     try {
       const result = await collection.find({}).toArray();
@@ -171,9 +177,9 @@ app.get("/sum/:user", (req, res) => {
       const result = await collection
         .aggregate([
           { $match: { name: req.params.user } },
-          { $group: { _id: "$name", amziausSuma: { $sum: "$age" } } }])
+          { $group: { _id: "$name", amziausVidurkis: { $avg: "$age" } } }])
         .toArray()
-      res.send(`result: ${JSON.stringify(result)}`)
+      res.send(result)
     }
   });
 });
