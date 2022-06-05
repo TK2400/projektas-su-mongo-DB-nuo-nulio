@@ -160,23 +160,20 @@ app.get("/count/:from/:to", (req, res) => {
   });
 });
 
-app.get("/count/", (req, res) => {
+app.get("/sum/:user", (req, res) => {
   client.connect(async function (err, client) {
     if (err) {
       res.send("something went wrong")
       client.close()
     } else {
-      const from = Number(req.params.from)
-      const to = Number(req.params.to)
       const database = client.db('usersdb');
       const collection = database.collection('users');
       const result = await collection
-      .aggregate([
-        {$match: { name: "Steve"}},
-        ])
-      .toArray()
+        .aggregate([
+          { $match: { name: req.params.user } },
+          { $group: { _id: "$name", amziausSuma: { $sum: "$age" } } }])
+        .toArray()
       res.send(`result: ${JSON.stringify(result)}`)
     }
   });
 });
-
