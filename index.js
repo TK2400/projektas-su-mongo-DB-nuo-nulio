@@ -184,3 +184,49 @@ app.get("/sum/:user", (req, res) => {
     }
   });
 });
+
+app.get("/count/:from/:to", (req, res) => {
+  client.connect(async function (err, client) {
+    if (err) {
+      res.send("something went wrong")
+      client.close()
+    } else {
+      const from = Number(req.params.from)
+      const to = Number(req.params.to)
+      const database = client.db('usersdb');
+      const collection = database.collection('users');
+      const result = await collection.countDocuments({ age: { $gt: from, $lt: to } })
+      res.send(`result: ${result}`)
+    }
+  });
+});
+
+app.get("/users", (req, res) => {
+  client.connect(async function (err, client) {
+    if (err) {
+      res.send("something went wrong")
+      client.close()
+    } else {
+      const database = client.db('usersdb');
+      const collection = database.collection('users');
+      const result = await collection
+        .toArray()
+      res.send(result)
+    }
+  });
+});
+
+app.get("/count", (req, res) => {
+  client.connect(async function (err, client) {
+    if (err) {
+      res.send("something went wrong")
+      client.close()
+    } else {
+      
+      const database = client.db('usersdb');
+      const collection = database.collection('users');
+      const result = await collection.countDocuments({ age: { $gt: 50 } })
+      res.send({result})
+    }
+  });
+});
