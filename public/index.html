@@ -7,15 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="index.css">
-    <script src = "index.js" defer></script>
+    <script src="index.js" defer></script>
 </head>
 
-<div class = "title">
-    <p>cia veikia express</p>
-</div>
+
 
 <body>
+    <div class="create_user_form" id="newUserFormDiv">
+        <form class="form" id="userForm">
+            <label for="name">User name </label><br>
+            <input type="text" id="name" placeholder="Input new user Name"><br>
 
+            <label for="age"> User Age</label><br>
+            <input type="text" id="age" placeholder="Input new user age"><br>
+
+            <input class="cancel" id="newUserCreateCancel" type="submit" value="Cancel"></input>
+            <input class="add_new_user" id="addNewUser" type="submit" value="New User"></input>
+        </form>
+    </div>
+
+   
 </body>
 
 </html>

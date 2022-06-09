@@ -1,4 +1,36 @@
-.title {
-    background-color: aquamarine;
-    font-size: 50px;
+
+body {
+    width: 100%;
+    }
+
+.card_holder {
+    width: 85%;
+    margin-left:auto;
+    margin-right:auto;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    justify-content: center;
+     
+}
+
+.user_card {
+    border: 8px;
+    border-color: black;
+    border-radius: 5px;
+    font-size: 1rem;
+    height: auto;
+    width: auto;
+    background-color: rgb(213, 233, 213);
+    margin: 5px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.user_card button {
+    background-color: rgb(202, 199, 199);
+    font-size: 1rem;
+    width: auto;
+    border-radius: 5px;
+    border-color: rgb(149, 148, 148);
+    margin: 0.25rem
 }
