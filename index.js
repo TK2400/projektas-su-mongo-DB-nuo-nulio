@@ -57,17 +57,13 @@ app.get('/users', (req, res) => {
 app.post('/users', (req, res) => {
   client.connect(async () => {
     const collection = client.db('usersdb').collection('users');
-    const userCount = await collection.countDocuments() + 1
+    // const userCount = await collection.countDocuments() + 1
     // console.log(userCount) //suveikia, gaunu skaiciu kuris atitiks naujo nario eiles numeri
-
     try {
-
       const result = await collection.insertOne({
         name: req.body.name,
         age: req.body.age,
-        number: userCount
       });
-      console.log(result)
       res.json(result);
       client.close();
 
@@ -204,17 +200,17 @@ app.delete('/users/:id', (req, res) => {
 //   });
 // });
 
-app.get("/count", (req, res) => {
-  client.connect(async function (err, client) {
-    if (err) {
-      res.send("something went wrong")
-      client.close()
-    } else {
+// app.get("/count", (req, res) => {
+//   client.connect(async function (err, client) {
+//     if (err) {
+//       res.send("something went wrong")
+//       client.close()
+//     } else {
 
-      const database = client.db('usersdb');
-      const collection = database.collection('users');
-      const result = await collection.countDocuments(/*{ age: { $gt: 50 } }*/)
-      res.send({ result })
-    }
-  });
-});
+//       const database = client.db('usersdb');
+//       const collection = database.collection('users');
+//       const result = await collection.countDocuments(/*{ age: { $gt: 50 } }*/)
+//       res.send({ result })
+//     }
+//   });
+// });
