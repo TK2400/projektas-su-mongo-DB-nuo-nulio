@@ -54,24 +54,47 @@ app.get('/users', (req, res) => {
 // DB_URI - tokiu budu neliktu nei user namo nei slaptazodio kode
 //  tada process.env.URI / env.DB_name ir t.t.
 
+// let sequenceNumber = 0
+
+
+
 app.post('/users', (req, res) => {
   client.connect(async () => {
     const collection = client.db('usersdb').collection('users');
-    // const userCount = await collection.countDocuments() + 1
-    // console.log(userCount) //suveikia, gaunu skaiciu kuris atitiks naujo nario eiles numeri
-    try {
-      const result = await collection.insertOne({
-        name: req.body.name,
-        age: req.body.age,
-      });
-      res.json(result);
-      client.close();
+    const userCount = await collection.countDocuments() + 1
+    console.log(userCount)
+    const sortedUserData = await collection.find().sort({ number: 1 }).toArray()
+    const numbers = sortedUserData.map(el => el.number).sort((a, b) => a - b)
+    console.log(numbers)
 
-    } catch (err) {
-      res.send("Something went wrong!!");
-      client.close();
+    function findMissingNumber(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        if ((arr[i + 1] - arr[i]) > 1) {
+          return arr[i] + 1
+        } else if ((arr[0] != 1)) {
+          return 1
+        } else {
+          return userCount
+        }
+      }
     }
-  });
+
+      const newNumber = findMissingNumber(numbers)
+
+      try {
+        const result = await collection.insertOne({
+          name: req.body.name,
+          age: req.body.age,
+          number: newNumber
+        });
+        res.json(result);
+        client.close();
+
+      } catch (err) {
+        res.send("Something went wrong!!");
+        client.close();
+      }
+    });
 });
 
 

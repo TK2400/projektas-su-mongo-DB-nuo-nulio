@@ -10,23 +10,22 @@ function createElement(object) {
     const card = document.createElement("div")
     const p1 = document.createElement("p")
     const p2 = document.createElement("p")
-    // const p3 = document.createElement("p")
+    const p3 = document.createElement("p")
     const hr = document.createElement("hr")
     const button = document.createElement("button")
     button.addEventListener('click', event => {
         deleteUser(object._id)
     })
     card.className = "user_card"
-    // button.className = "user_delete_button"
-
+   
     p1.innerText = `User Name - ${object.name}`
     p2.innerHTML = `Age -${object.age}`
-    // p3.innerText = `Club member ID - ${object.number}`
+    p3.innerText = `Club member ID - ${object.number}`
     button.innerText = "Delete User"
 
     card.appendChild(p1)
     card.appendChild(p2)
-    // card.appendChild(p3)
+    card.appendChild(p3)
     card.appendChild(hr)
     card.appendChild(button)
     cardHolder.appendChild(card)
