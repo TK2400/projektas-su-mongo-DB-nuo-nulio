@@ -61,25 +61,33 @@ app.get('/users', (req, res) => {
 app.post('/users', (req, res) => {
   client.connect(async () => {
     const collection = client.db('usersdb').collection('users');
-    const userCount = await collection.countDocuments() + 1
-    console.log(userCount)
-    const sortedUserData = await collection.find().sort({ number: 1 }).toArray()
+    const userCount = await collection.countDocuments()
+      const sortedUserData = await collection.find().sort({ number: 1 }).toArray()
     const numbers = sortedUserData.map(el => el.number).sort((a, b) => a - b)
-    console.log(numbers)
-
+    
     function findMissingNumber(arr) {
       for (let i = 0; i < arr.length; i++) {
-        if ((arr[i + 1] - arr[i]) > 1) {
+        if ((arr[i+1] - arr[i])>1 && arr[0] === 1) {
           return arr[i] + 1
-        } else if ((arr[0] != 1)) {
+        }  else if( arr[0]!=1){
           return 1
-        } else {
-          return userCount
-        }
+        } else  return userCount+1
       }
     }
 
+    // function findMissingNumber(arr) {
+    //   for (let i = 0; i < arr.length; i++) {
+    //     if ((arr[i + 1] - arr[i]) > 1) {
+    //       return (arr[i] + 1)
+    //     } else if ((arr[0] != 1)) {
+    //       return 1
+    //     } else {
+    //       return userCount
+    //     }
+    //   }
+    // }
       const newNumber = findMissingNumber(numbers)
+      console.log(newNumber)
 
       try {
         const result = await collection.insertOne({
