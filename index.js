@@ -61,33 +61,22 @@ app.get('/users', (req, res) => {
 app.post('/users', (req, res) => {
   client.connect(async () => {
     const collection = client.db('usersdb').collection('users');
-    const userCount = await collection.countDocuments()
-    const sortedUserData = await collection.find().sort({ number: 1 }).toArray()
-    const numbers = sortedUserData.map(el => el.number).sort((a, b) => a - b)
-
-    function findMissingNumber(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        if ((arr[i + 1] - arr[i]) > 1 && arr[0] === 1) {
-          return arr[i] + 1
-        } else if (arr[0] != 1) {
-          return 1
-        } else return userCount + 1
-      }
-    }
+    // const userCount = await collection.countDocuments()
+    // const sortedUserData = await collection.find().sort({ number: 1 }).toArray()
+    // const numbers = sortedUserData.map(el => el.number).sort((a, b) => a - b)
 
     // function findMissingNumber(arr) {
     //   for (let i = 0; i < arr.length; i++) {
-    //     if ((arr[i + 1] - arr[i]) > 1) {
-    //       return (arr[i] + 1)
-    //     } else if ((arr[0] != 1)) {
+    //     if ((arr[i + 1] - arr[i]) > 1 && arr[0] === 1) {
+    //       return arr[i] + 1
+    //     } else if (arr[0] != 1) {
     //       return 1
-    //     } else {
-    //       return userCount
-    //     }
+    //     } else return userCount + 1
     //   }
     // }
-    const newNumber = findMissingNumber(numbers)
-    console.log(newNumber)
+
+    // const newNumber = findMissingNumber(numbers)
+    // console.log(newNumber)
 
     try {
       const result = await collection.insertOne({
@@ -95,8 +84,7 @@ app.post('/users', (req, res) => {
         lname: req.body.lname,
         email: req.body.email,
         age: req.body.age,
-
-        number: newNumber
+        // number: newNumber
       });
       res.json(result);
       client.close();
@@ -117,6 +105,7 @@ app.delete('/users/:id', (req, res) => {
       _id: ObjectId(id)
     })
     res.json(result);
+
     client.close();
   });
 });
@@ -151,38 +140,36 @@ app.delete('/users/:id', (req, res) => {
 // });
 
 // put updatins visa objekta
-// app.put("/user", (req, res) => {
-//   client.connect(async function (err, client) {
-//     if (err) {
-//       res.send("Something went wrong!!");
-//       client.close();
-//     } else {
-//       const database = client.db('usersdb')
-//       const collection = database.collection('users')
+app.put("/user/:id", (req, res) => {
+  const id = req.params.id
+  client.connect(async function (err, client) {
+    if (err) {
+      res.send("Something went wrong!!");
+      client.close();
+    } else {
+      const database = client.db('usersdb')
+      const collection = database.collection('users')
+      const { name, lname, email, age } = req.body;
+      const filter = { _id: ObjectId(id) }
 
-//       const { _id, vardas, pavarde, metai, el_pastas } = req.body;
-//       // const _id = req.params.body._id;
-//       // const name = req.params.body.name;
-//       //82 ir 83 eilutes atitinka 81 eilute
-//       const filter = { _id: ObjectId(_id) };
-//       const newValues = {
-//         vardas: vardas,
-//         pavarde: pavarde,
-//         metai: metai,
-//         el_pastas: el_pastas
-//       };
-//       try {
-//         const result = await collection.replaceOne(filter, newValues);
-//         res.send(result);
-//         client.close();
-//       } catch (err) {
-//         res.send("something went wrong")
-//         client.close()
-//       }
-
-//     }
-//   });
-// });
+      const newUserData = {
+        name: name,
+        lname: lname,
+        email: email,
+        age: age
+      };
+   
+      try {
+        const result = await collection.replaceOne(filter, newUserData);
+        res.send(result);
+        client.close();
+      } catch (err) {
+        res.send("something went wrong")
+        client.close()
+      }
+    }
+  });
+});
 
 // app.get("/count/:from/:to", (req, res) => {
 //   client.connect(async function (err, client) {

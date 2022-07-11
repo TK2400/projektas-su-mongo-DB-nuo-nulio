@@ -1,38 +1,46 @@
 // alert("veikia express")
 
 // html kurimas is duomjenu bazes
-const body = document.body
-const cardHolder = document.createElement("section")
-cardHolder.className = "card_holder"
-body.appendChild(cardHolder)
+// const body = document.body
+// const cardHolder = document.createElement("section")
+// cardHolder.className = "card_holder"
+// body.appendChild(cardHolder)
 
-function createElement(object) {
-    const card = document.createElement("div")
-    const p1 = document.createElement("p")
-    const p2 = document.createElement("p")
-    const p3 = document.createElement("p")
-    const hr = document.createElement("hr")
-    const button = document.createElement("button")
-    button.addEventListener('click', event => {
-        deleteUser(object._id)
-    })
-    card.className = "user_card"
+// function createElement(object) {
+//     const card = document.createElement("div")
+//     const p1 = document.createElement("p")
+//     const p2 = document.createElement("p")
+//     const p3 = document.createElement("p")
+//     const hr = document.createElement("hr")
+//     const buttonDelete = document.createElement("button")
+//     buttonDelete.addEventListener('click', event => {
+//         deleteUser(object._id)
+//     })
+//     const buttonUpdate = document.createElement("button")
+//     buttonUpdate.addEventListener('click', event => {
+//         updateUser(object._id)
+//     })
+
+
+//     card.className = "user_card"
    
-    p1.innerText = `User Name - ${object.name}`
-    p2.innerHTML = `Age -${object.age}`
-    p3.innerText = `Club member ID - ${object.number}`
-    button.innerText = "Delete User"
+//     p1.innerText = `User Name - ${object.name}`
+//     p2.innerHTML = `Age -${object.age}`
+//     p3.innerText = `Club member ID - ${object.number}`
+//     buttonDelete.innerText = "Delete User"
+//     buttonUpdate.innerText = "Update User"
 
-    card.appendChild(p1)
-    card.appendChild(p2)
-    card.appendChild(p3)
-    card.appendChild(hr)
-    card.appendChild(button)
-    cardHolder.appendChild(card)
-    body.appendChild(cardHolder)
-}
+//     card.appendChild(p1)
+//     card.appendChild(p2)
+//     card.appendChild(p3)
+//     card.appendChild(hr)
+//     card.appendChild(buttonDelete)
+//     card.appendChild(buttonUpdate)
+//     cardHolder.appendChild(card)
+//     body.appendChild(cardHolder)
+// }
 
-fetchGet()
+// fetchGet()
 
 async function fetchGet() {
     const result = await fetch("http://127.0.0.1:9000/users")
@@ -42,18 +50,18 @@ async function fetchGet() {
 }
 
 //  naujo user kurimas
-const newUserSubmitData = document.getElementById("userForm")
-let newUserData = {}
-newUserSubmitData.addEventListener('submit', function (event) {
-    event.preventDefault()
-    newUserData = {
-        name: document.getElementById("name").value,
-        age: document.getElementById("age").value
-    }
-    newUserSubmitData.reset()
-    fetchCreateUser()
-    return newUserData
-})
+// const newUserSubmitData = document.getElementById("userForm")
+// let newUserData = {}
+// newUserSubmitData.addEventListener('submit', function (event) {
+//     event.preventDefault()
+//     newUserData = {
+//         name: document.getElementById("name").value,
+//         age: document.getElementById("age").value
+//     }
+//     newUserSubmitData.reset()
+//     fetchCreateUser()
+//     return newUserData
+// })
 
 
 
@@ -74,10 +82,29 @@ async function fetchCreateUser() {
     return result.json();
 }
 
+async function fetchUpdateUser() {
+    const result = await fetch(
+        'http://127.0.0.1:9000/user/:id',
+        {
+            method: 'PUT',
+            mode: 'cors',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(newUserData),
+        },
+    );
+    fetchGet()
+    window.location.replace('http://127.0.0.1:9000/index.html');
+    return result.json();
+}
+
+
+
 async function deleteUser(id) {
     const result = await fetch(`http://127.0.0.1:9000/users/${id}`, {
         method: 'DELETE',
     })
-    window.location.replace('http://127.0.0.1:9000/index.html')
+    // window.location.replace('http://127.0.0.1:9000/index.html')
     return result
 }
